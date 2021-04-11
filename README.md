@@ -1,3 +1,4 @@
+![Weather Dashboard](https://user-images.githubusercontent.com/78775177/114294006-ae7e9000-9a60-11eb-9f0e-6e487e1567c5.PNG)
 ## User Story
 
 ```
