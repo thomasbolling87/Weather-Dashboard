@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <title>Weather Dashboard</title>
+  </head>
+
+  <body style="background-color: lightblue;">
+    <header class="container-fluid text-center text-white bg-dark p-2">
+      <h1>Weather Dashboard🌤</h1>
+    </header>
+
+    <div class="container-fluid">
+      <div class="row">
+        <aside class="col-lg-3 background-color:lightcyan">
+          <h5 class="mt-1">Add a City:</h5>
+          <!-- form that user will input the city they are looking for -->
+          <div class="form-inline form-group">
+            <input class="form-control" type="text" id="search-value" />
+            <!-- search button -->
+            <button class="btn btn-primary" id="search-button">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+
+          <!-- List created that I will append the cities that the user has searched to from the LocalStorage -->
+          <ul class="list-group cities" id="cities"></ul>
+        </aside>
+
+        <div class="col-lg-9">
+          <!-- forcast for the current will use the id -->
+          <div id="today" class="mt-3"></div>
+          <!-- five day forecast will use this id and the created list will be appended here -->
+          <div id="forecast" class="row mt-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+
+
+</html>
