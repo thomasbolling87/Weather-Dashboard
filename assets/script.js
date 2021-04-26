@@ -1,3 +1,7 @@
+// setup API key
+var APIKey="c28b97356ed2fecc76faea43b1a3fec1";
+
+
 window.addEventListener('load', function () {
     // Grab the existing cities that user adds from local storage IF it exists
     var existingCities;
@@ -14,7 +18,7 @@ window.addEventListener('load', function () {
       if (!searchValue) {
         return;
       }
-      var endpoint = `https://api.openweathermap.org/data/2.5/forecast?q=${searchValue}&appid=d91f911bcf2c0f925fb6535547a5ddc9&units=imperial`;
+      var endpoint = `https://api.openweathermap.org/data/2.5/forecast?q=${searchValue}&appid=${APIKey}&units=imperial`;
       fetch(endpoint)
         .then((res) => res.json())
         .then((data) => {
@@ -78,7 +82,7 @@ window.addEventListener('load', function () {
     // Helper function that fetches and displays the UV index
     function getUVIndex(lat, lon) {
       fetch(
-        `http://api.openweathermap.org/data/2.5/uvi?appid=d91f911bcf2c0f925fb6535547a5ddc9&lat=${lat}&lon=${lon}`
+        `http://api.openweathermap.org/data/2.5/uvi?appid=${APIKey}&lat=${lat}&lon=${lon}`
       )
         .then((res) => res.json())
         .then((data) => {
@@ -89,24 +93,24 @@ window.addEventListener('load', function () {
           var buttonEl = document.createElement('span');
           buttonEl.classList.add('btn', 'btn-sm');
           buttonEl.innerHTML = data.value;
-  
-          switch (data.value) {
-            case data.value < 3:
-              buttonEl.classList.add('btn-success');
-              break;
-            case data.value < 7:
-              buttonEl.classList.add('btn-warning');
-              break;
-            default:
-              buttonEl.classList.add('btn-danger');
+          
+          // If statement that will change the color of the index button to red, yellow, or green depending on the uv number
+          if (data.value) {
+            buttonEl.classList.add('btn-danger');
           }
-  
+          if (data.value < 7) {
+            buttonEl.classList.add('btn-warning')
+          }
+          if (data.value < 3) {
+            buttonEl.classList.add('btn-success')
+          }
+
           bodyEl.appendChild(uvEl);
           uvEl.appendChild(buttonEl);
         });
     }
   
-    const handleCities = (term) => {
+    const collectCities = (term) => {
       if (existingCities && existingCities.length > 0) {
         var existingEntries = JSON.parse(localStorage.getItem('cities'));
         var newCities = [...existingEntries, term];
@@ -120,13 +124,13 @@ window.addEventListener('load', function () {
   
     // Function that preforms the API request and creates elements to render to the page
     function searchWeather(searchValue) {
-      var endpoint = `https://api.openweathermap.org/data/2.5/weather?q=${searchValue}&appid=d91f911bcf2c0f925fb6535547a5ddc9&units=imperial`;
+      var endpoint = `https://api.openweathermap.org/data/2.5/weather?q=${searchValue}&appid=${APIKey}&units=imperial`;
       fetch(endpoint)
         .then((res) => res.json())
         .then((data) => {
           // Invoke our history method
           if (!existingCities.includes(searchValue)) {
-            handleCities(searchValue);
+            collectCities(searchValue);
           }
           // Clear any old content
           todayEl = document.querySelector('#today');
@@ -180,7 +184,7 @@ window.addEventListener('load', function () {
       var text = searchValue;
       liEl.textContent = text;
   
-      // Select the history element and add an event to it
+      // Makes city saved in history clickable
       liEl.addEventListener('click', (e) => {
         if (e.target.tagName === 'LI') {
           searchWeather(e.target.textContent);
@@ -203,10 +207,25 @@ window.addEventListener('load', function () {
         document.querySelector('#search-value').value = '';
       }
     }
+
+    // Helper function to clear the cities in the localStorage
+    function clearHistory(cities) {
+      // var deleteHistory = document.querySelector('#cities').value;
+      if (cities) {        
+        existingCities=[];
+        localStorage.removeItem('cities');
+        document.location.reload();
+      }
+    }
   
     // Attaches the getSearchVal function to the search button
     document
       .querySelector('#search-button')
       .addEventListener('click', getSearchVal);
+
+    document
+      .querySelector('#clear-history')
+      .addEventListener('click', clearHistory);
+
   });
   
