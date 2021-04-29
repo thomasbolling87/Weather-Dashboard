@@ -14,11 +14,11 @@ window.addEventListener('load', function () {
     var citiesItems = [];
   
     // Function to get the forecast, loops through the days of the week and displays data to the page
-    function getForecast(searchValue) {
-      if (!searchValue) {
+    function getForecast(searchCity) {
+      if (!searchCity) {
         return;
       }
-      var endpoint = `https://api.openweathermap.org/data/2.5/forecast?q=${searchValue}&appid=${APIKey}&units=imperial`;
+      var endpoint = `https://api.openweathermap.org/data/2.5/forecast?q=${searchCity}&appid=${APIKey}&units=imperial`;
       fetch(endpoint)
         .then((res) => res.json())
         .then((data) => {
@@ -41,10 +41,10 @@ window.addEventListener('load', function () {
               cardEl.classList.add('card', 'bg-primary', 'text-white');
               var windEl = document.createElement('p');
               windEl.classList.add('card-text');
-              windEl.textContent = "Wind Speed: " +data.list[i].wind.speed+ " MPH";
+              windEl.textContent = `Wind Speed: ${data.list[i].wind.speed} MPH`;
               var humidityEl = document.createElement('p');
               humidityEl.classList.add('card-text');
-              humidityEl.textContent = "Humidity : " +data.list[i].main.humidity+ " %";
+              humidityEl.textContent = `Humidity : ${data.list[i].main.humidity} %`;
               var bodyEl = document.createElement('div');
               bodyEl.classList.add('card-body', 'p-2');
               var titleEl = document.createElement('h5');
@@ -59,10 +59,10 @@ window.addEventListener('load', function () {
               );
               var p1El = document.createElement('p');
               p1El.classList.add('card-text');
-              p1El.textContent = "Temp: " +data.list[i].main.temp_max+ " °F";
+              p1El.textContent = `Temp: ${data.list[i].main.temp_max} °F`;
               var p2El = document.createElement('p');
               p2El.classList.add('card-text');
-              p2El.textContent = "Humidity: " +data.list[i].main.humidity+"%";
+              p2El.textContent = `Humidity: ${data.list[i].main.humidity}%`;
   
               // Merge together and put on page
               colEl.appendChild(cardEl);
@@ -87,9 +87,9 @@ window.addEventListener('load', function () {
         .then((res) => res.json())
         .then((data) => {
           var bodyEl = document.querySelector('.card-body');
-          var uvEl = document.createElement('p');
-          uvEl.id = 'uv';
-          uvEl.textContent = 'UV Index: ';
+          var uvIndexEl = document.createElement('p');
+          uvIndexEl.id = 'uv';
+          uvIndexEl.textContent = 'UV Index: ';
           var buttonEl = document.createElement('span');
           buttonEl.classList.add('btn', 'btn-sm');
           buttonEl.innerHTML = data.value;
@@ -105,8 +105,8 @@ window.addEventListener('load', function () {
             buttonEl.classList.add('btn-success')
           }
 
-          bodyEl.appendChild(uvEl);
-          uvEl.appendChild(buttonEl);
+          bodyEl.appendChild(uvIndexEl);
+          uvIndexEl.appendChild(buttonEl);
         });
     }
   
@@ -123,14 +123,14 @@ window.addEventListener('load', function () {
     };
   
     // Function that preforms the API request and creates elements to render to the page
-    function searchWeather(searchValue) {
-      var endpoint = `https://api.openweathermap.org/data/2.5/weather?q=${searchValue}&appid=${APIKey}&units=imperial`;
+    function searchWeather(searchCity) {
+      var endpoint = `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${APIKey}&units=imperial`;
       fetch(endpoint)
         .then((res) => res.json())
         .then((data) => {
           // Invoke our history method
-          if (!existingCities.includes(searchValue)) {
-            collectCities(searchValue);
+          if (!existingCities.includes(searchCity)) {
+            collectCities(searchCity);
           }
           // Clear any old content
           todayEl = document.querySelector('#today');
@@ -170,18 +170,18 @@ window.addEventListener('load', function () {
           todayEl.appendChild(cardEl);
   
           // Invoke our forecast and UV functions
-          getForecast(searchValue);
+          getForecast(searchCity);
           getUVIndex(data.coord.lat, data.coord.lon);
         });
     }
   
     // Helper function to create a new row
-    function makeRow(searchValue) {
+    function makeRow(searchCity) {
       // Create a new `li` element and add classes/text to it
       var liEl = document.createElement('li');
       liEl.classList.add('list-group-item', 'list-group-item-action');
-      liEl.id = searchValue;
-      var text = searchValue;
+      liEl.id = searchCity;
+      var text = searchCity;
       liEl.textContent = text;
   
       // Makes city saved in history clickable
@@ -200,10 +200,10 @@ window.addEventListener('load', function () {
   
     // Helper function to get a search value.
     function getSearchVal() {
-      var searchValue = document.querySelector('#search-value').value;
-      if (searchValue) {
-        searchWeather(searchValue);
-        makeRow(searchValue);
+      var searchCity = document.querySelector('#search-value').value;
+      if (searchCity) {
+        searchWeather(searchCity);
+        makeRow(searchCity);
         document.querySelector('#search-value').value = '';
       }
     }
